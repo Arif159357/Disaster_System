@@ -4,16 +4,23 @@ from djangoPytorch.model import main
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from djangoPytorch.scrapping import scrap
+from django.views.decorators.csrf import csrf_exempt
+
+ 
 
 # @api_view(['GET'])
 
 def get_url(request):
     return render(request, "url.html")
-
+    
+@csrf_exempt
+def got_url(request):
+    if request.method == "GET":
+        url = request.GET.get('data')
+        scrap(url)
+    return HttpResponse()
 
 def show_model(request):
-    print("request",request.GET.get('search_url'))
-    scrap()
     pred, url = main()
     mylist = zip(pred, url)
     content = {"Image": mylist}

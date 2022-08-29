@@ -30,6 +30,7 @@
       <h5 class="text-center text-danger">Disaster System</h5>
       <div class="input-group mb-3">
         <input
+          method="GET"
           id="webURL"
           type="text"
           name="search_url"
@@ -39,13 +40,20 @@
           aria-describedby="basic-addon2"
         />
         <div class="input-group-append">
+          <input
+            onclick="setGetParameter()" 
+            class="btn btn-primary"
+            type="button"            
+            value = "Scrap"
+          />
+        <div class="input-group-append">
           <a
             class="btn btn-outline-secondary"
             type="button"
             href="{% url 'home'%}"
-            method="GET"
+            
           >
-            Submit
+            Show Results
           </a>
         </div>
       </div>
@@ -53,9 +61,24 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+
+      function setGetParameter(){
+          var search_word = $("#webURL").val();
+          console.log(search_word)
+          $.ajax({
+            type: "GET",
+            url: "{% url 'got_url' %}",
+            data: {"data":search_word},
+            success: function(result){
+              alert("Success");
+            }
+          });
+      }
+    </script>
     <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
       crossorigin="anonymous"
     ></script>
     <script

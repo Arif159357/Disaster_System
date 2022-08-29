@@ -9,32 +9,34 @@ from base64 import b64decode
 import os
 from models.models import StoreImage
 
-def scrap():
+def scrap(url):
     print("here")
-    urls = ['https://www.ndtv.com/topic/bangladesh-disaster', 'https://www.ndtv.com/topic/bangladesh-flood']
+    StoreImage.objects.all().delete()
+    # urls = ['https://www.ndtv.com/topic/bangladesh-disaster', 'https://www.ndtv.com/topic/bangladesh-flood']
 
     href_url = []
-
-    for url in urls:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text,'html.parser')
-        p_tag = soup.find_all('p', {'class' : 'header fbld'})
-        for a in p_tag:
-            children = a.findChildren("a" , recursive=True)
-            for h in children:
-                href_url.append(h['href'])
-            
+    # for url in urls:
+    response = requests.get(url)
+    # print(response.text)
+    soup = BeautifulSoup(response.text,'html.parser')
+    img_tag = soup.find_all('img', {'class' : 'img_brd marr10'})
+    for a in img_tag:
+        url = a.get("src")
+        href_url.append(url)
+        # for h in children:
+        #     href_url.append(h['href'])
+    
 
 
     count = 0
-    for ur in href_url:
-        response = requests.get(ur)
-        soup = BeautifulSoup(response.text,'html.parser')
-        div = soup.find('div', {'class' : 'ins_instory_dv_cont lazyload'})
-        image_url = div.img['data-src']
-        img = Image.open(requests.get(image_url, stream = True).raw)
+    for image_url in href_url:
+        # response = requests.get(ur)
+        # soup = BeautifulSoup(response.text,'html.parser')
+        # div = soup.find('div', {'class' : 'ins_instory_dv_cont lazyload'})
+        # image_url = div.img['data-src']
+        img = Image.open(requests.get(url, stream = True).raw)
         img_name = 'image_'+str(count)+'.png'
-        
+
         imgs = StoreImage(
             image_name=img_name,
             photo=image_url
@@ -42,7 +44,7 @@ def scrap():
         imgs.save()
         count = count + 1
 
-    print("Done Scrapping!!")        
+    print("Done Scrapping!!",count)        
 
 
 
